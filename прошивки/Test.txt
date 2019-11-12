@@ -1,0 +1,35 @@
+/*
+ * valik.c
+ *
+ * Created: 21.10.2019 19:21:40
+ * Author : drummer
+ */ 
+
+#define F_CPU 1000000UL
+
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <util/delay.h>
+	#include <stdio.h>
+	#include <stdint.h>
+
+int main(void){
+	unsigned char display [8]={0x01,0x00,0x02,0x00,0x03,0x00,0x04};
+	DDRD=0xFF;
+	PORTD = 0b00000010;
+    TCCR0=(1<<CS02);
+ 	TCNT0=0;
+    TIMSK=TIMSK|(1<<TOIE0);
+    sei();
+
+    while (1) 
+    { 
+
+    }
+}
+
+ISR(TIMER0_OVF_vect){
+	TCNT0 = 0;
+	PORTD=PORTD^1<<PORTD0;
+	_delay_ms(500);
+}

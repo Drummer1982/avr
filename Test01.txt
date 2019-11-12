@@ -1,0 +1,32 @@
+#define F_CPU 1000000UL
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <util/delay.h>
+#include <stdio.h>
+#include <stdint.h>
+
+#include <avr/io.h>
+volatile uint8_t a=0b10000000;
+int main(void)
+{
+	
+	unsigned char display[8]={0x01,0x00,0x02,0x00,0x03,0x00,0x04,0x00};
+	DDRD=0xFF;
+	//PORTD=0b00000010;
+	TCCR0 = (1<<CS00)|(1<<CS02);// в регистре TCCR0 выставляем биты CS00 и CS02. Читается, регистру присвоить значение 1 сдивнутое на ноль бит или 1 сдвинутое на два бита
+	TCNT0 = 0;//это - счетный регистр. В него можно прописать любое значение и снего начнется счет
+	TIMSK = TIMSK|(1<<TOIE0);//Читается, регистру присвоить значение самого себя или 1 сдвинутое на TOIE0 бит
+	sei();//разрешаем прерывания глобально - во всей программе и для всей периферии контроллера.
+	while (1)
+	{
+	}
+}
+
+ISR(TIMER0_OVF_vect){
+	TCNT0 = 0;
+	if(PORTD==0x00)a=0b10000000;
+	else a=a>>1;
+	PORTD=a>>1;
+
+}
+Hallo World!
